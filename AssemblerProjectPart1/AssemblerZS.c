@@ -181,11 +181,29 @@ void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 		//part3 = "to be done";
 		//put the code here
 
+		index2 = 0;
+		index++;  //skips the space
+		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
+		{
+			part2[index2] = line[index];
+			index++;
+			index2++;
+		}
+		part1[index2] = '\0';
 
+		index++;  //skips the space
+		index2 = 0;
+		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
+		{
+			part3[index2] = line[index];
+			index++;
+			index2++;
+		}
+		part3[index2] = '\0';
 
 		//these are hard coded temporary values this needs to be deleted when the split is working
-		strcpy( part2, "cx" );  //temporary values so there is something to see
-		strcpy( part3, "654" );
+		//strcpy( part2, "cx" );  //temporary values so there is something to see
+		//strcpy( part3, "654" );
 	}
 	//for debugging, comment out when you don't need it
 	printf( "\nCommand = %s %s %s", part1, part2, part3 );
