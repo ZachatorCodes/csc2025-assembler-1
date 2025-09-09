@@ -126,7 +126,7 @@
     <ClCompile Include="..\..\..\..\..\..\Downloads\startAssembler.c" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\AssemblerPart1ZS.asm.txt" />
+    <None Include="..\AssemblerPart1ZS.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
