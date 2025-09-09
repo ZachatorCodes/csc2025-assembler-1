@@ -181,6 +181,8 @@ void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 		//part3 = "to be done";
 		//put the code here
 
+
+
 		//these are hard coded temporary values this needs to be deleted when the split is working
 		strcpy( part2, "cx" );  //temporary values so there is something to see
 		strcpy( part3, "654" );

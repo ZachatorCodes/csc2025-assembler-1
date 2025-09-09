@@ -123,10 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\Downloads\AssemblerZS.c" />
+    <None Include="AssemblerPart1ZS.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AssemblerPart1ZS.asm" />
+    <ClCompile Include="AssemblerZS.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
