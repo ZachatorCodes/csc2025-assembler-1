@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\Downloads\startAssembler.c">
+    <ClCompile Include="..\..\..\..\..\..\Downloads\AssemblerZS.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
