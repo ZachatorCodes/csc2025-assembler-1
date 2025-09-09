@@ -1,8 +1,7 @@
-// name:
-// project title
-// date:
-// i/o files
-// description:
+// name: Zach Schwartz
+// project title: Assembler Project Part 1
+// date: 09/08/2025
+// description: Code for part 1 of the assembler project. Takes assembly code and splits it into commands.
 
 #define _CRT_SECURE_NO_WARNINGS  // lets us use deprecated code
 
@@ -141,7 +140,10 @@ void convertToMachineCode( FILE *fin )
 /********************   splitCommand   ***********************
 splits a line of asm into it's parts
 
-Needs work, comment must be corrected
+Takes in a line of assembly code as a character array and splits it into three seperate arrays
+part1 - the command
+part2 - the first operand
+part3 - the second operand
 -----------------------------------------------------------*/
 void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 {
@@ -181,17 +183,21 @@ void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 		//part3 = "to be done";
 		//put the code here
 
-		index2 = 0;
+		index2 = 0; // resets the index to 0 for the next part
 		index++;  //skips the space
+		// while the next character is not a space or the end of the string (stopper or new line),
+		// copy the character from line(index) to part2(index) then increment both indexes.
+		// add string stopper when done
 		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
 		{
 			part2[index2] = line[index];
 			index++;
 			index2++;
 		}
-		part1[index2] = '\0';
+		part1[index2] = '\0'; // add the string stopper
 
-		index++;  //skips the space
+		// repeat the process for part3
+		index++;
 		index2 = 0;
 		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
 		{
@@ -199,7 +205,7 @@ void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 			index++;
 			index2++;
 		}
-		part3[index2] = '\0';
+		part3[index2] = '\0'; // add the string stopper
 
 		//these are hard coded temporary values this needs to be deleted when the split is working
 		//strcpy( part2, "cx" );  //temporary values so there is something to see
