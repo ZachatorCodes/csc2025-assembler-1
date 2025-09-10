@@ -127,6 +127,11 @@ void convertToMachineCode( FILE *fin )
 	}
 	else if ( part1[0] == 'm' )  //move into a register
 	{
+		machineCode = 192;
+		machineCode = machineCode | whichOperand(part2) << 3; // bitshifts 3 to the left
+		machineCode = machineCode | whichOperand(part3);
+		memory[address] = machineCode;
+		address++;
 		//put the command into the first 3 bits of machineCode
 		//put the first operand (register) into the next 2 bits (use bitshift)
 		//put the second operand into the last 3 bits 
