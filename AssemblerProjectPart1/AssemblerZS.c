@@ -114,6 +114,7 @@ void convertToMachineCode( FILE *fin )
 	char part2[ LINE_SIZE ] = "";// the two operands, could be empty
 	char part3[ LINE_SIZE ] = "";	
 	int machineCode = 0;			// One line of converted asm code from the file
+	Memory operand3 = 0;  // the second operand, could be empty
 
 	fgets( line, LINE_SIZE, fin );		// Takes one line from the asm file
 	changeToLowerCase( line );
@@ -127,14 +128,20 @@ void convertToMachineCode( FILE *fin )
 	}
 	else if ( part1[0] == 'm' )  //move into a register
 	{
-		machineCode = 192;
+		machineCode = MOVREG;
 		machineCode = machineCode | whichOperand(part2) << 3; // bitshifts 3 to the left
-		machineCode = machineCode | whichOperand(part3);
+		operand3 = whichOperand(part3);
+		machineCode = machineCode | operand3;
 		memory[address] = machineCode;
 		address++;
 		//put the command into the first 3 bits of machineCode
 		//put the first operand (register) into the next 2 bits (use bitshift)
 		//put the second operand into the last 3 bits 
+	}
+	if (operand3 == CONSTANT) // if the second operand is a constant
+	{
+		memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
+		address++;
 	}
 	     //output memory, for debugging, comment out when you don't need it. could use printMemoryDumpHex
 	printf( "\n" );
