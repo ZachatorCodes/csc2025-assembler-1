@@ -113,7 +113,7 @@ void convertToMachineCode( FILE *fin )
 	char part1[LINE_SIZE];	// the asm commmand
 	char part2[ LINE_SIZE ] = "";// the two operands, could be empty
 	char part3[ LINE_SIZE ] = "";	
-	int machineCode = 0;			// One line of converted asm code from the file
+	int machineCode = 0;	// One line of converted asm code from the file
 	Memory operand3 = 0;  // the second operand, could be empty
 
 	fgets( line, LINE_SIZE, fin );		// Takes one line from the asm file
