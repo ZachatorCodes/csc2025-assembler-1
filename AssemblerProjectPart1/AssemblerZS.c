@@ -246,7 +246,7 @@ void runMachineCode( )
 	while ( fullCommand != HALT )
 	{
 		part1 = fullCommand & mask1;
-		part2 = fullCommand & mask2;
+		part2 = (fullCommand & mask2) >> 3;
 		part3 = fullCommand & mask3;
 		if ( part1 == MOVREG )
 		{
