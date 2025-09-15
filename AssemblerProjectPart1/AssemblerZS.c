@@ -61,7 +61,30 @@ int whichOperand( char operand[]);			// Returns the number of the letter regista
 void changeToLowerCase( char line[ ] );	// Changes each character to lower case
 void printMemoryDumpHex( );				// Prints memory in hexedecimal
 void putValue( int operand, int value );
-Memory getValue( Memory operand );
+
+Memory getValue(Memory operand)
+{
+	int value;
+	switch (operand)
+	{
+		case AXREG:
+			return regis.AX;
+			break;
+		case BXREG:
+			return regis.BX;
+			break;
+		case CXREG:
+			return regis.CX;
+			break;
+		case DXREG:
+			return regis.DX;
+			break;
+		case CONSTANT:
+			value = memory[address];
+			address++;
+			return value;
+	}
+}
 
 int main( )
 {
@@ -251,6 +274,7 @@ void runMachineCode( )
 		if ( part1 == MOVREG )
 		{
 			//get the value from part3
+			value2 = getValue(part3);
 			//put the value into the register specified by part2
 		}
 		fullCommand = memory[ address ];  //the next command
