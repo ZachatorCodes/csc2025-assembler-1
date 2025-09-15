@@ -10,7 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 
-char ASM_FILE_NAME[ ] = "AssemblerPart1ZS.asm";
+char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm";
 
 #define MAX 150			// strlen of simulators memory can be changed
 #define COL 7			// number of columns for output
@@ -49,55 +49,55 @@ Memory memory[MAX] = { 0 };   //global variable the memory of the virtual machin
 Memory address;     //global variable the current address in the virtual machine
 
 //function prototypes
-void runMachineCode( );	// Executes the machine code	****NEEDS WORK***
-void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] );	// splits line of asm into it's three parts	****NEEDS WORK***
-void convertToMachineCode( FILE *fin );	// Converts a single line of ASM to machine code	***NEEDS WORK***
-void assembler( );			// Converts the entire ASM file and stores it in memory
-void printMemoryDump( );	// Prints memeory with commands represented as integes
+void runMachineCode();	// Executes the machine code	****NEEDS WORK***
+void splitCommand(char line[], char part1[], char part2[], char part3[]);	// splits line of asm into it's three parts	****NEEDS WORK***
+void convertToMachineCode(FILE* fin);	// Converts a single line of ASM to machine code	***NEEDS WORK***
+void assembler();			// Converts the entire ASM file and stores it in memory
+void printMemoryDump();	// Prints memeory with commands represented as integes
 
 // Helper functions prototypes
-int convertToNumber( char line[ ], int start );	// converts a sub-string to an int
-int whichOperand( char operand[]);			// Returns the number of the letter registar
-void changeToLowerCase( char line[ ] );	// Changes each character to lower case
-void printMemoryDumpHex( );				// Prints memory in hexedecimal
-void putValue( int operand, int value );
+int convertToNumber(char line[], int start);	// converts a sub-string to an int
+int whichOperand(char operand[]);			// Returns the number of the letter registar
+void changeToLowerCase(char line[]);	// Changes each character to lower case
+void printMemoryDumpHex();				// Prints memory in hexedecimal
+void putValue(int operand, int value);
 
 Memory getValue(Memory operand)
 {
 	int value;
 	switch (operand)
 	{
-		case AXREG:
-			return regis.AX;
-			break;
-		case BXREG:
-			return regis.BX;
-			break;
-		case CXREG:
-			return regis.CX;
-			break;
-		case DXREG:
-			return regis.DX;
-			break;
-		case CONSTANT:
-			value = memory[address];
-			address++;
-			return value;
+	case AXREG:
+		return regis.AX;
+		break;
+	case BXREG:
+		return regis.BX;
+		break;
+	case CXREG:
+		return regis.CX;
+		break;
+	case DXREG:
+		return regis.DX;
+		break;
+	case CONSTANT:
+		value = memory[address];
+		address++;
+		return value;
 	}
 }
 
-int main( )
+int main()
 {
 	//printMemoryDump( );  //displays the starting memory, remove once code works
-	assembler( );
-	runMachineCode( );
-	     /*remove one memory dump, once you decide if you want to see 
-		    the results in hex or decimal */
-	printMemoryDumpHex( );  //displays memory with final values in hex 
-	printMemoryDump( );  //displays memory with final values
-	
-	printf( "\n" );
-	system( "pause" );
+	assembler();
+	runMachineCode();
+	/*remove one memory dump, once you decide if you want to see
+	   the results in hex or decimal */
+	printMemoryDumpHex();  //displays memory with final values in hex 
+	printMemoryDump();  //displays memory with final values
+
+	printf("\n");
+	system("pause");
 	return 0;
 }
 
@@ -107,21 +107,21 @@ commands into the memory.
 parameters: none
 return value: none
 -----------------------------------------------------------*/
-void assembler( )
+void assembler()
 {
 	address = 0;
 	FILE* fin;		// File pointer for reading in the assembly code.
 	//recommend changeing so you can type in file name
-	fopen_s( &fin, ASM_FILE_NAME, "r" );
-	if ( fin == NULL )
+	fopen_s(&fin, ASM_FILE_NAME, "r");
+	if (fin == NULL)
 	{
-		printf( "Error, file didn't open\n\nExiting program...\n\n" );
-		system( "pause" );
-		exit( 1 );
+		printf("Error, file didn't open\n\nExiting program...\n\n");
+		system("pause");
+		exit(1);
 	}
-	for ( int i = 0; i < MAX && !feof( fin ); i++ )
+	for (int i = 0; i < MAX && !feof(fin); i++)
 	{
-		convertToMachineCode( fin );
+		convertToMachineCode(fin);
 	}
 }
 
@@ -130,26 +130,26 @@ Converts a single line of ASM to machine code
 
 Needs work, comment must be corrected
 ---------------------------------------------------------------------*/
-void convertToMachineCode( FILE *fin )
+void convertToMachineCode(FILE* fin)
 {
 	char line[LINE_SIZE];		// full command
 	char part1[LINE_SIZE];	// the asm commmand
-	char part2[ LINE_SIZE ] = "";// the two operands, could be empty
-	char part3[ LINE_SIZE ] = "";	
+	char part2[LINE_SIZE] = "";// the two operands, could be empty
+	char part3[LINE_SIZE] = "";
 	int machineCode = 0;	// One line of converted asm code from the file
 	Memory operand3 = 0;  // the second operand, could be empty
 
-	fgets( line, LINE_SIZE, fin );		// Takes one line from the asm file
-	changeToLowerCase( line );
-	
-	splitCommand( line, part1, part2, part3 );
+	fgets(line, LINE_SIZE, fin);		// Takes one line from the asm file
+	changeToLowerCase(line);
 
-	if ( part1[0] == 'h' )  //halt
+	splitCommand(line, part1, part2, part3);
+
+	if (part1[0] == 'h')  //halt
 	{
 		memory[address] = HALT;
 		address++;
 	}
-	else if ( part1[0] == 'm' )  //move into a register
+	else if (part1[0] == 'm')  //move into a register
 	{
 		machineCode = MOVREG;
 		machineCode = machineCode | whichOperand(part2) << 3; // bitshifts 3 to the left
@@ -166,9 +166,9 @@ void convertToMachineCode( FILE *fin )
 		memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 		address++;
 	}
-	     //output memory, for debugging, comment out when you don't need it. could use printMemoryDumpHex
-	printf( "\n" );
-	printMemoryDump( );
+	//output memory, for debugging, comment out when you don't need it. could use printMemoryDumpHex
+	printf("\n");
+	printMemoryDump();
 }
 
 
@@ -180,36 +180,36 @@ part1 - the command
 part2 - the first operand
 part3 - the second operand
 -----------------------------------------------------------*/
-void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
+void splitCommand(char line[], char part1[], char part2[], char part3[])
 {
 	int index = 0;           //the character location in the string line
 	int index2 = 0;          //character location in new string ie the parts
 
 	//moves the first set of characters from line into instruction
-	while ( line[ index ] != ' ' && line[ index ] != '\0' && line[ index ] != '\n' )
+	while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
 	{
-		part1[ index2 ] = line[ index ];
+		part1[index2] = line[index];
 		index++;
 		index2++;
 	}
-	part1[ index2 ] = '\0';				// add the string stopper
+	part1[index2] = '\0';				// add the string stopper
 
-	if ( line[ index ] == '\0' )  //no space, command has no other parts
+	if (line[index] == '\0')  //no space, command has no other parts
 	{
-		strcpy( part2, "\0" );
-		strcpy( part3, "\0" );
+		strcpy(part2, "\0");
+		strcpy(part3, "\0");
 	}
 	else
 	{
-		printf( "\nIndex is: %d", index );  //debugging remove when 
+		printf("\nIndex is: %d", index);  //debugging remove when 
 
 		//checks to make sure it is logical to proceed.  
 		//once code is working this code should never be reached.
-		if ( index < 1 || index > 3 )
+		if (index < 1 || index > 3)
 		{
-			printf( "\a\a\tnumber not in the range\n" );
-			system( "pause" );  //stops the code from running until enter is pushed
-			exit( 1 );	// This is temporary. You must find a way to deal with index out of bounds.
+			printf("\a\a\tnumber not in the range\n");
+			system("pause");  //stops the code from running until enter is pushed
+			exit(1);	// This is temporary. You must find a way to deal with index out of bounds.
 		}
 
 		//What needs to be done.
@@ -247,7 +247,7 @@ void splitCommand( char line[ ], char part1[ ], char part2[ ], char part3[ ] )
 		//strcpy( part3, "654" );
 	}
 	//for debugging, comment out when you don't need it
-	printf( "\nCommand = %s %s %s", part1, part2, part3 );
+	printf("\nCommand = %s %s %s", part1, part2, part3);
 }
 
 /********************   runMachineCode   ***********************
@@ -255,32 +255,32 @@ Executes the machine code that is in memory, the virtual machine
 
 Needs to be written
 -----------------------------------------------------------*/
-void runMachineCode( )
+void runMachineCode()
 {
 	Memory mask1 = 224;   //111 00 000
 	Memory mask2 = 24;    //000 11 000
 	Memory mask3 = 7;	  //000 00 111
 	Memory part1, part2, part3; //command, operand1, 
 	int value1, value2;   //the actual values in the registers or constants
-	
+
 	address = 0;
-	Memory fullCommand = memory[ address ];
+	Memory fullCommand = memory[address];
 	address++;
-	while ( fullCommand != HALT )
+	while (fullCommand != HALT)
 	{
 		part1 = fullCommand & mask1;
 		part2 = (fullCommand & mask2) >> 3;
 		part3 = fullCommand & mask3;
-		if ( part1 == MOVREG )
+		if (part1 == MOVREG)
 		{
 			//get the value from part3
 			value2 = getValue(part3);
 			//put the value into the register specified by part2
 		}
-		fullCommand = memory[ address ];  //the next command
+		fullCommand = memory[address];  //the next command
 		address++;
 		//debugging, comment out when you don't need it
-		printMemoryDump( );
+		printMemoryDump();
 	}
 }
 
@@ -295,30 +295,30 @@ COL is the number of columns that are to be displayed (Vicki used 7)
 parameters: none
 return value: none
 ---------------------------------------------------------------------------------*/
-void printMemoryDump( )
+void printMemoryDump()
 {
 	int numRows = MAX / COL + 1;	//number of rows that will print
 	int carryOver = MAX % COL;		//number of columns on the bottom row
 	int location;   //the current location being called
-	for ( int row = 0; row < numRows; row++ )
+	for (int row = 0; row < numRows; row++)
 	{
 		location = row;
-			for ( int column = 0; location < MAX&&column < COL; column++ )
+		for (int column = 0; location < MAX && column < COL; column++)
 		{
-			if ( !(numRows - 1 == row&&carryOver - 1 < column) )
+			if (!(numRows - 1 == row && carryOver - 1 < column))
 			{
-				printf( "%5d.%5d", location, memory[location] );
+				printf("%5d.%5d", location, memory[location]);
 				location += (numRows - (carryOver - 1 < column));
 			}
 		}
-		printf( "\n" );
+		printf("\n");
 	}
-	printf( "\nAX:%d\t", regis.AX );
-	printf( "BX:%d\t", regis.BX );
-	printf( "CX:%d\t", regis.CX );
-	printf( "DX:%d\n\n", regis.DX );
-	printf( "Address: %d\n", address );
-	printf( "Flag: %d\n\n", regis.flag );
+	printf("\nAX:%d\t", regis.AX);
+	printf("BX:%d\t", regis.BX);
+	printf("CX:%d\t", regis.CX);
+	printf("DX:%d\n\n", regis.DX);
+	printf("Address: %d\n", address);
+	printf("Flag: %d\n\n", regis.flag);
 }
 
 
@@ -327,30 +327,30 @@ Prints memory in
 *parameters: none
 *return value: none
 ----------------------------------------------------------------*/
-void printMemoryDumpHex( )
+void printMemoryDumpHex()
 {
 	int numRows = MAX / COL + 1;	//number of rows that will print
 	int carryOver = MAX % COL;		//number of columns on the bottom row
 	int location;   //the current location being called
-	for ( int row = 0; row < numRows; row++ )
+	for (int row = 0; row < numRows; row++)
 	{
 		location = row;
-		for ( int column = 0; location < MAX && column < COL; column++ )
+		for (int column = 0; location < MAX && column < COL; column++)
 		{
-			if ( !( numRows - 1 == row && carryOver - 1 < column ) )
+			if (!(numRows - 1 == row && carryOver - 1 < column))
 			{
-				printf( "%5d.%3x", location, memory[ location ] );
-				location += ( numRows - ( carryOver - 1 < column ) );
+				printf("%5d.%3x", location, memory[location]);
+				location += (numRows - (carryOver - 1 < column));
 			}
 		}
-		printf( "\n" );
+		printf("\n");
 	}
-	printf( "\nAX:%d\t", regis.AX );
-	printf( "BX:%d\t", regis.BX );
-	printf( "CX:%d\t", regis.CX );
-	printf( "DX:%d\n", regis.DX );
-	printf( "Address: %d\n", address );
-	printf( "Flag: %d\n\n", regis.flag );
+	printf("\nAX:%d\t", regis.AX);
+	printf("BX:%d\t", regis.BX);
+	printf("CX:%d\t", regis.CX);
+	printf("DX:%d\n", regis.DX);
+	printf("Address: %d\n", address);
+	printf("Flag: %d\n\n", regis.flag);
 }
 
 /*****************************************************************************/
@@ -362,26 +362,26 @@ void printMemoryDumpHex( )
 /* letter - the first letter of the operand, register, number, [
 /* return value - the number of the register
 /*--------------------------------------------------------------*/
-int whichOperand( char operand[LINE_SIZE] )
+int whichOperand(char operand[LINE_SIZE])
 {
-	char letter = operand[ 0 ];
-	if ( letter == 'a' )
+	char letter = operand[0];
+	if (letter == 'a')
 	{
 		return AXREG;
 	}
-	else if ( letter == 'b' )
+	else if (letter == 'b')
 	{
 		return BXREG;
 	}
-	else if ( letter == 'c' )
+	else if (letter == 'c')
 	{
 		return CXREG;
 	}
-	else if ( letter == 'd' )
+	else if (letter == 'd')
 	{
 		return DXREG;
 	}
-	else if ( isdigit( letter ) )
+	else if (isdigit(letter))
 	{
 		return CONSTANT;
 	}
@@ -389,35 +389,35 @@ int whichOperand( char operand[LINE_SIZE] )
 }
 
 /*********************ConvertToNumber ********************/
-/*  takes in a line and converts digits to a integer          
-/*  line - is the string of assembly code to convert           
-/*  start - is the location where the line is being converted, 
+/*  takes in a line and converts digits to a integer
+/*  line - is the string of assembly code to convert
+/*  start - is the location where the line is being converted,
 /*--------------------------------------------------------------*/
-int convertToNumber( char line[ ], int start )
+int convertToNumber(char line[], int start)
 {
 	int value; // is the integer value of the digits in the code
-	char number[ 16 ];  //just the digits
+	char number[16];  //just the digits
 	int negative = 0;  //negative or positive number
 
 	int i = 0;
-	while ( line[ start ] == '[' || line[ start ] == ' ' )
+	while (line[start] == '[' || line[start] == ' ')
 	{
 		start++;
 	}
-	if ( line[ start ] == '-' )
+	if (line[start] == '-')
 	{
 		start++;
 		negative = 1;
 	}
-	while ( i < 16 && isdigit( line[ start ] ) )
+	while (i < 16 && isdigit(line[start]))
 	{
-		number[ i ] = line[ start ];
+		number[i] = line[start];
 		i++;
 		start++;
 	}
-	number[ i ] = '\0';
-	value = atoi( number );
-	if ( negative == 1 )
+	number[i] = '\0';
+	value = atoi(number);
+	if (negative == 1)
 	{
 		value = -value;
 	}
@@ -430,12 +430,12 @@ Changes each character to lower case
 * line - the string that was entered the line is completely changed to lower case
 * return value: none
 ----------------------------------------------------------------*/
-void changeToLowerCase( char line[ ] )
+void changeToLowerCase(char line[])
 {
 	int index = 0;
-	while ( index < strlen( line ) )
+	while (index < strlen(line))
 	{
-		line[index] = tolower( line[index] );
+		line[index] = tolower(line[index]);
 		index++;
 	}
 }
