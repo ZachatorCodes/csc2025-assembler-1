@@ -86,6 +86,27 @@ Memory getValue(Memory operand)
 	}
 }
 
+void putValue(int operand, int value)
+{
+	if (operand == AXREG)
+	{
+		regis.AX = value;
+	}
+	else if (operand == BXREG)
+	{
+		regis.BX = value;
+	}
+	else if (operand == CXREG) {
+		regis.CX = value;
+	}
+	else if (operand == DXREG) {
+		regis.DX = value;
+	}
+	else {
+		printf("Error, invalid operand");
+	}
+}
+
 int main()
 {
 	//printMemoryDump( );  //displays the starting memory, remove once code works
@@ -276,6 +297,7 @@ void runMachineCode()
 			//get the value from part3
 			value2 = getValue(part3);
 			//put the value into the register specified by part2
+			putValue(part2, value2);
 		}
 		fullCommand = memory[address];  //the next command
 		address++;
