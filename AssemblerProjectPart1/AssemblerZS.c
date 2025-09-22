@@ -1,7 +1,7 @@
 // name: Zach Schwartz
-// project title: Assembler Project Part 1
+// project title: Assembler Project Part 2
 // date: 09/08/2025
-// description: Code for part 1 of the assembler project. Takes assembly code and splits it into commands.
+// description: Code for up to part 2 of the assembler project.
 
 #define _CRT_SECURE_NO_WARNINGS  // lets us use deprecated code
 
@@ -63,6 +63,7 @@ void changeToLowerCase(char line[]);	// Changes each character to lower case
 void printMemoryDumpHex();				// Prints memory in hexedecimal
 void putValue(int operand, int value);
 
+// Function to take in an operand, and return one of the memory registers.
 Memory getValue(Memory operand)
 {
 	int value;
@@ -87,6 +88,7 @@ Memory getValue(Memory operand)
 	}
 }
 
+// Function to take in an operand and a value, and store the value in the correct register based on the operand.
 void putValue(int operand, int value)
 {
 	if (operand == AXREG)
