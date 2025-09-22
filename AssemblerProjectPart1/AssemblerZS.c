@@ -26,6 +26,7 @@ char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm";
 //commands
 #define HALT 5
 #define MOVREG 192
+#define ADD 160
 
 //boolean
 #define TRUE 1
@@ -49,9 +50,9 @@ Memory memory[MAX] = { 0 };   //global variable the memory of the virtual machin
 Memory address;     //global variable the current address in the virtual machine
 
 //function prototypes
-void runMachineCode();	// Executes the machine code	****NEEDS WORK***
-void splitCommand(char line[], char part1[], char part2[], char part3[]);	// splits line of asm into it's three parts	****NEEDS WORK***
-void convertToMachineCode(FILE* fin);	// Converts a single line of ASM to machine code	***NEEDS WORK***
+void runMachineCode();	// Executes the machine code
+void splitCommand(char line[], char part1[], char part2[], char part3[]);	// splits line of asm into it's three parts
+void convertToMachineCode(FILE* fin);	// Converts a single line of ASM to machine code
 void assembler();			// Converts the entire ASM file and stores it in memory
 void printMemoryDump();	// Prints memeory with commands represented as integes
 
@@ -173,7 +174,19 @@ void convertToMachineCode(FILE* fin)
 	else if (part1[0] == 'm')  //move into a register
 	{
 		machineCode = MOVREG;
-		machineCode = machineCode | whichOperand(part2) << 3; // bitshifts 3 to the left
+		machineCode = machineCode | (whichOperand(part2) << 3); // bitshifts 3 to the left
+		operand3 = whichOperand(part3);
+		machineCode = machineCode | operand3;
+		memory[address] = machineCode;
+		address++;
+		//put the command into the first 3 bits of machineCode
+		//put the first operand (register) into the next 2 bits (use bitshift)
+		//put the second operand into the last 3 bits 
+	}
+	else if (part1[0] == 'a')  //move into a register
+	{
+		machineCode = ADD;
+		machineCode = machineCode | (whichOperand(part2) << 3); // bitshifts 3 to the left
 		operand3 = whichOperand(part3);
 		machineCode = machineCode | operand3;
 		memory[address] = machineCode;
@@ -200,6 +213,8 @@ Takes in a line of assembly code as a character array and splits it into three s
 part1 - the command
 part2 - the first operand
 part3 - the second operand
+
+returns nothing
 -----------------------------------------------------------*/
 void splitCommand(char line[], char part1[], char part2[], char part3[])
 {
@@ -298,6 +313,9 @@ void runMachineCode()
 			value2 = getValue(part3);
 			//put the value into the register specified by part2
 			putValue(part2, value2);
+		}
+		else if (part1 == ADD) {
+
 		}
 		fullCommand = memory[address];  //the next command
 		address++;
@@ -461,3 +479,5 @@ void changeToLowerCase(char line[])
 		index++;
 	}
 }
+
+// List Of Problems (Head Bangers) - Anything that takes more than a few minutes to figure out
