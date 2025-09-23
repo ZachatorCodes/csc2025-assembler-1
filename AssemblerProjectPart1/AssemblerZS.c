@@ -318,7 +318,13 @@ void runMachineCode()
 			putValue(part2, value2);
 		}
 		else if (part1 == ADD) {
-
+			// get the values from part2 and part3
+			value1 = getValue(part2);
+			value2 = getValue(part3);
+			// add the values together
+			value1 = value1 + value2;
+			// put the value into the register specified by part2
+			putValue(part2, value1);
 		}
 		fullCommand = memory[address];  //the next command
 		address++;
