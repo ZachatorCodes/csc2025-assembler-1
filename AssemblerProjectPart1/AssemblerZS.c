@@ -62,6 +62,7 @@ int whichOperand(char operand[]);			// Returns the number of the letter registar
 void changeToLowerCase(char line[]);	// Changes each character to lower case
 void printMemoryDumpHex();				// Prints memory in hexedecimal
 void putValue(int operand, int value);
+Memory getValue(Memory operand);
 
 // Function to take in an operand, and return one of the memory registers.
 Memory getValue(Memory operand)
