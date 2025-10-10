@@ -268,7 +268,7 @@ void splitCommand(char line[], char part1[], char part2[], char part3[])
 			index++;
 			index2++;
 		}
-		part1[index2] = '\0'; // add the string stopper
+		part2[index2] = '\0'; // add the string stopper
 
 		// repeat the process for part3
 		index++;
