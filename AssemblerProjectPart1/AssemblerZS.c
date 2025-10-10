@@ -59,7 +59,7 @@ void convertToMachineCode(FILE* fin);	// Converts a single line of ASM to machin
 void assembler();			// Converts the entire ASM file and stores it in memory
 void printMemoryDump();	// Prints memeory with commands represented as integes
 
-// Helper functions prototypes
+// Helper functions prototypes 
 int convertToNumber(char line[], int start);	// converts a sub-string to an int
 int whichOperand(char operand[]);			// Returns the number of the letter registar
 void changeToLowerCase(char line[]);	// Changes each character to lower case
