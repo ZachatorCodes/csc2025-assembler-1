@@ -22,11 +22,14 @@ char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm";
 #define CXREG 2
 #define DXREG 3
 #define CONSTANT 7
+#define ADDRESS 6
 
 //commands
 #define HALT 5
 #define MOVREG 192
+#define MOVMEM 224
 #define ADD 160
+#define PUT 7
 
 //boolean
 #define TRUE 1
@@ -197,6 +200,9 @@ void convertToMachineCode(FILE* fin)
 		//put the command into the first 3 bits of machineCode
 		//put the first operand (register) into the next 2 bits (use bitshift)
 		//put the second operand into the last 3 bits 
+	}
+	else if (part1[0] == 'p') {
+		printf("Output: %d\n", getValue(AXREG));
 	}
 	if (operand3 == CONSTANT) // if the second operand is a constant
 	{
