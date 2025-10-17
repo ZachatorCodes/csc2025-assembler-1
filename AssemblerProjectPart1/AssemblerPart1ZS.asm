@@ -1,6 +1,5 @@
-MOV dx 42
-MOV cx 10
-ADD dx cx
-MOV ax dx
-put
-halt
+MOV BX 27
+MOV [9] BX
+MOX AX [9]
+PUT
+HALT
