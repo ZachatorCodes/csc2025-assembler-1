@@ -121,7 +121,7 @@ int main()
 	runMachineCode();
 	/*remove one memory dump, once you decide if you want to see
 	   the results in hex or decimal */
-	printMemoryDumpHex();  //displays memory with final values in hex 
+	//printMemoryDumpHex();  //displays memory with final values in hex 
 	printMemoryDump();  //displays memory with final values
 
 	printf("\n");
@@ -202,7 +202,10 @@ void convertToMachineCode(FILE* fin)
 		//put the second operand into the last 3 bits 
 	}
 	else if (part1[0] == 'p') {
-		printf("Output: %d\n", getValue(AXREG));
+		machineCode = PUT;
+		memory[address] = machineCode;
+		address++;
+		return;
 	}
 	if (operand3 == CONSTANT) // if the second operand is a constant
 	{
@@ -227,8 +230,8 @@ returns nothing
 -----------------------------------------------------------*/
 void splitCommand(char line[], char part1[], char part2[], char part3[])
 {
-	int index = 0;           //the character location in the string line
-	int index2 = 0;          //character location in new string ie the parts
+	int index = 0;           // the character location in the string line
+	int index2 = 0;          // character location in new string ie the parts
 
 	//moves the first set of characters from line into instruction
 	while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
@@ -238,6 +241,7 @@ void splitCommand(char line[], char part1[], char part2[], char part3[])
 		index2++;
 	}
 	part1[index2] = '\0';				// add the string stopper
+	index2 = 0;
 
 	if (line[index] == '\0')  //no space, command has no other parts
 	{
@@ -246,53 +250,34 @@ void splitCommand(char line[], char part1[], char part2[], char part3[])
 	}
 	else
 	{
-		printf("\nIndex is: %d", index);  //debugging remove when 
-
-		//checks to make sure it is logical to proceed.  
-		//once code is working this code should never be reached.
-		if (index < 1 || index > 3)
-		{
-			printf("\a\a\tnumber not in the range\n");
-			system("pause");  //stops the code from running until enter is pushed
-			exit(1);	// This is temporary. You must find a way to deal with index out of bounds.
-		}
-
-		//What needs to be done.
-		//copy the characters from line into the two parts, part2 and part3
-		//part2 = "to be done"; //note write one function that works for both
-		//part3 = "to be done";
-		//put the code here
-
-		index2 = 0; // resets the index to 0 for the next part
-		index++;  //skips the space
-		// while the next character is not a space or the end of the string (stopper or new line),
-		// copy the character from line(index) to part2(index) then increment both indexes.
-		// add string stopper when done
-		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
-		{
-			part2[index2] = line[index];
-			index++;
-			index2++;
+		if (line[index] != '/0' && index + 1 < LINE_SIZE) {
+			if (line[index] == ' ' && line[index + 1] != ' ' && line[index + 1] != "\n") {
+				index++;  //skips the space
+				while ((line[index] != ' ' && line[index] != '\0' && line[index] != '\n') && index < LINE_SIZE && index2 < LINE_SIZE - 1)
+				{
+					part2[index2] = line[index];
+					index++;
+					index2++;
+				}
+			}
 		}
 		part2[index2] = '\0'; // add the string stopper
-
-		// repeat the process for part3
-		index++;
 		index2 = 0;
-		while (line[index] != ' ' && line[index] != '\0' && line[index] != '\n')
-		{
-			part3[index2] = line[index];
-			index++;
-			index2++;
+
+		if (line[index] != '/0' && index + 1 < LINE_SIZE) {
+			if (line[index] == ' ' && line[index + 1] != ' ' && line[index + 1] != "\n") {
+				index++;  //skips the space
+				while ((line[index] != ' ' && line[index] != '\0' && line[index] != '\n') && index < LINE_SIZE && index2 < LINE_SIZE - 1)
+				{
+					part3[index2] = line[index];
+					index++;
+					index2++;
+				}
+			}
 		}
 		part3[index2] = '\0'; // add the string stopper
-
-		//these are hard coded temporary values this needs to be deleted when the split is working
-		//strcpy( part2, "cx" );  //temporary values so there is something to see
-		//strcpy( part3, "654" );
+		printf("\nCommand = %s %s %s", part1, part2, part3);
 	}
-	//for debugging, comment out when you don't need it
-	printf("\nCommand = %s %s %s", part1, part2, part3);
 }
 
 /********************   runMachineCode   ***********************
@@ -316,12 +301,13 @@ void runMachineCode()
 		part1 = fullCommand & mask1;
 		part2 = (fullCommand & mask2) >> 3;
 		part3 = fullCommand & mask3;
-		if (part1 == MOVREG)
+		if (fullCommand == PUT) {
+			printf("\t\tAX is: %d\n", regis.AX);
+		}
+		else if (part1 == MOVREG)
 		{
-			//get the value from part3
-			value2 = getValue(part3);
-			//put the value into the register specified by part2
-			putValue(part2, value2);
+			value1 = getValue(part3);
+			putValue(part2, value1);
 		}
 		else if (part1 == ADD) {
 			// get the values from part2 and part3
@@ -335,7 +321,7 @@ void runMachineCode()
 		fullCommand = memory[address];  //the next command
 		address++;
 		//debugging, comment out when you don't need it
-		printMemoryDump();
+		//printMemoryDump();
 	}
 }
 
@@ -417,7 +403,7 @@ void printMemoryDumpHex()
 /* letter - the first letter of the operand, register, number, [
 /* return value - the number of the register
 /*--------------------------------------------------------------*/
-int whichOperand(char operand[LINE_SIZE])
+int whichOperand(char operand[])
 {
 	char letter = operand[0];
 	if (letter == 'a')
