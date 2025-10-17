@@ -89,7 +89,12 @@ Memory getValue(Memory operand)
 		value = memory[address];
 		address++;
 		return value;
+	case ADDRESS:
+		value = memory[address];
+		address++;
+		return memory[value];
 	}
+	return -1; // error case
 }
 
 // Function to take in an operand and a value, and store the value in the correct register based on the operand.
@@ -108,6 +113,12 @@ void putValue(int operand, int value)
 	}
 	else if (operand == DXREG) {
 		regis.DX = value;
+	}
+	else if (operand == ADDRESS) {
+		int addr;
+		addr = memory[address];
+		address++;
+		memory[addr] = value;
 	}
 	else {
 		printf("Error, invalid operand");
@@ -179,12 +190,27 @@ void convertToMachineCode(FILE* fin)
 	}
 	else if (part1[0] == 'm')  //move into a register
 	{
-		machineCode = MOVREG;
-		machineCode = machineCode | (whichOperand(part2) << 3); // bitshifts 3 to the left
+		if (part2[0] == '[') {
+			machineCode = MOVMEM;
+			char temp[LINE_SIZE];
+			strcpy(temp, part2); // copies part2 without the '['
+			strcpy(part2, part3); // copies part2 without the '['
+			strcpy(part3, temp); // copies part2 without the '['
+		}
+		else {
+			machineCode = MOVREG;
+		}
+
 		operand3 = whichOperand(part3);
+		machineCode = machineCode | (whichOperand(part2) << 3); // bitshifts 3 to the left
 		machineCode = machineCode | operand3;
 		memory[address] = machineCode;
 		address++;
+
+		if (operand3 == ADDRESS) {
+			memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
+			address++;
+		}
 		//put the command into the first 3 bits of machineCode
 		//put the first operand (register) into the next 2 bits (use bitshift)
 		//put the second operand into the last 3 bits 
@@ -197,6 +223,10 @@ void convertToMachineCode(FILE* fin)
 		machineCode = machineCode | operand3;
 		memory[address] = machineCode;
 		address++;
+		if (operand3 == CONSTANT) {
+			memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
+			address++;
+		}
 		//put the command into the first 3 bits of machineCode
 		//put the first operand (register) into the next 2 bits (use bitshift)
 		//put the second operand into the last 3 bits 
@@ -207,7 +237,7 @@ void convertToMachineCode(FILE* fin)
 		address++;
 		return;
 	}
-	if (operand3 == CONSTANT) // if the second operand is a constant
+	else if (operand3 == CONSTANT) // if the second operand is a constant
 	{
 		memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 		address++;
@@ -308,6 +338,10 @@ void runMachineCode()
 		{
 			value1 = getValue(part3);
 			putValue(part2, value1);
+		}
+		else if (part1 == MOVMEM) {
+			value1 = getValue(part2);
+			putValue(ADDRESS, value1);
 		}
 		else if (part1 == ADD) {
 			// get the values from part2 and part3
@@ -421,6 +455,10 @@ int whichOperand(char operand[])
 	else if (letter == 'd')
 	{
 		return DXREG;
+	}
+	else if (letter == '[')
+	{
+		return ADDRESS;
 	}
 	else if (isdigit(letter))
 	{
