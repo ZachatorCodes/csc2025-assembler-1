@@ -207,7 +207,7 @@ void convertToMachineCode(FILE* fin)
 		memory[address] = machineCode;
 		address++;
 
-		if (operand3 == ADDRESS) {
+		if (operand3 == ADDRESS || operand3 == CONSTANT) {
 			memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 			address++;
 		}
