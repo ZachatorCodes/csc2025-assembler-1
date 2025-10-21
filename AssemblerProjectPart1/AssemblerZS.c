@@ -1,22 +1,22 @@
-// name: Zach Schwartz
-// project title: Assembler Project Part 2
-// date: 09/08/2025
-// description: Code for up to part 2 of the assembler project.
+// Name: Zach Schwartz
+// Project Title: Assembler Project Part 4
+// Date: 10/20/2025
+// Description: Code for up to part 4 of the assembler project.
 
-#define _CRT_SECURE_NO_WARNINGS  // lets us use deprecated code
+#define _CRT_SECURE_NO_WARNINGS // allows the use of deprecated code
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm";
+char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm"; // name of linked assembly file
 
 #define MAX 150			// strlen of simulators memory can be changed
 #define COL 7			// number of columns for output
 #define LINE_SIZE 20	// For c-strings
 
-//OPERAND TYPES, REGISTERS AND OTHER
+// operand types, registers, and other
 #define AXREG 0
 #define BXREG 1
 #define CXREG 2
@@ -24,20 +24,21 @@ char ASM_FILE_NAME[] = "AssemblerPart1ZS.asm";
 #define CONSTANT 7
 #define ADDRESS 6
 
-//commands
+// commands
 #define HALT 5
 #define MOVREG 192
 #define MOVMEM 224
 #define ADD 160
 #define PUT 7
 
-//boolean
+// boolean
 #define TRUE 1
 #define FALSE 0
 
-enum operType { reg, mem, constant, arrayBx, arrayBxPlus, none };  //list of all types of operand types
+// list of all operand types
+enum operType { reg, mem, constant, arrayBx, arrayBxPlus, none };
 
-//Registers and flag add the stack pointer
+// registers and flag add the stack pointer
 struct Registers
 {
 	int AX;
@@ -47,25 +48,25 @@ struct Registers
 	int flag;
 }regis;
 
-//GLOBAL VARIABLES
-typedef short int Memory;  //sets the type of memory to short int 
-Memory memory[MAX] = { 0 };   //global variable the memory of the virtual machine
-Memory address;     //global variable the current address in the virtual machine
+// global variables
+typedef short int Memory;    // sets the type of memory to short int 
+Memory memory[MAX] = { 0 };  // global variable the memory of the virtual machine
+Memory address;              // global variable the current address in the virtual machine
 
-//function prototypes
-void runMachineCode();	// Executes the machine code
-void splitCommand(char line[], char part1[], char part2[], char part3[]);	// splits line of asm into it's three parts
-void convertToMachineCode(FILE* fin);	// Converts a single line of ASM to machine code
-void assembler();			// Converts the entire ASM file and stores it in memory
-void printMemoryDump();	// Prints memeory with commands represented as integes
+// function prototypes
+void runMachineCode(); // executes the machine code
+void splitCommand(char line[], char part1[], char part2[], char part3[]); // splits line of asm into it's three parts
+void convertToMachineCode(FILE* fin); // converts a single line of ASM to machine code
+void assembler(); // converts the entire ASM file and stores it in memory
+void printMemoryDump(); // prints memory with commands represented as integes
 
-// Helper functions prototypes 
-int convertToNumber(char line[], int start);	// converts a sub-string to an int
-int whichOperand(char operand[]);			// Returns the number of the letter registar
-void changeToLowerCase(char line[]);	// Changes each character to lower case
-void printMemoryDumpHex();				// Prints memory in hexedecimal
-void putValue(int operand, int value);
-Memory getValue(Memory operand);
+// helper functions prototypes 
+int convertToNumber(char line[], int start); // converts a sub-string to an int
+int whichOperand(char operand[]); // returns the number of the letter registar
+void changeToLowerCase(char line[]); // changes each character to lower case
+void printMemoryDumpHex(); // prints memory in hexedecimal
+void putValue(int operand, int value); // puts a value into the correct register based on the operand
+Memory getValue(Memory operand); // gets a value from the correct register based on the operand
 
 // Function to take in an operand, and return one of the memory registers.
 Memory getValue(Memory operand)
@@ -121,20 +122,15 @@ void putValue(int operand, int value)
 		memory[addr] = value;
 	}
 	else {
-		printf("Error, invalid operand");
+		printf("Error, invalid operand"); // error case
 	}
 }
 
 int main()
 {
-	//printMemoryDump( );  //displays the starting memory, remove once code works
 	assembler();
 	runMachineCode();
-	/*remove one memory dump, once you decide if you want to see
-	   the results in hex or decimal */
-	//printMemoryDumpHex();  //displays memory with final values in hex 
-	printMemoryDump();  //displays memory with final values
-
+	printMemoryDump(); // displays memory with final values
 	printf("\n");
 	system("pause");
 	return 0;
@@ -167,7 +163,11 @@ void assembler()
 /********************   convertToMachineCode   ***********************
 Converts a single line of ASM to machine code
 
-Needs work, comment must be corrected
+takens in a file pointer to the asm file, reads one line and splits it
+into its parts then converts it to machine code based on the command and operands
+
+parameters: FILE* fin - pointer to the asm file
+return value: none
 ---------------------------------------------------------------------*/
 void convertToMachineCode(FILE* fin)
 {
@@ -256,7 +256,11 @@ part1 - the command
 part2 - the first operand
 part3 - the second operand
 
-returns nothing
+parameters: char line[] - the full line of assembly code
+			char part1[] - the command
+			char part2[] - the first operand
+			char part3[] - the second operand
+return values: nothing
 -----------------------------------------------------------*/
 void splitCommand(char line[], char part1[], char part2[], char part3[])
 {
@@ -313,7 +317,11 @@ void splitCommand(char line[], char part1[], char part2[], char part3[])
 /********************   runMachineCode   ***********************
 Executes the machine code that is in memory, the virtual machine
 
-Needs to be written
+Actually executes the machine code based on the commands and operands stored in memory
+and interpreted by the convertToMachineCode function. Uses bit masking to get the parts of each command.
+
+parameters: none
+return value: none
 -----------------------------------------------------------*/
 void runMachineCode()
 {
