@@ -520,3 +520,4 @@ void changeToLowerCase(char line[])
 }
 
 // List Of Problems (Head Bangers) - Anything that takes more than a few minutes to figure out
+// 1. For assembler 4, when getting and moving code from memory the code compiling and the lines changing got me stuck
