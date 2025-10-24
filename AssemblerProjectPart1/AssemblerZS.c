@@ -68,7 +68,11 @@ void printMemoryDumpHex(); // prints memory in hexedecimal
 void putValue(int operand, int value); // puts a value into the correct register based on the operand
 Memory getValue(Memory operand); // gets a value from the correct register based on the operand
 
-// Function to take in an operand, and return one of the memory registers.
+/********************   getValue   ***********************
+Function to take in an operand, and return one of the memory registers.
+parameters: Memory operand - the operand to get the value from
+return value: Returns register value, contant value, or memory value based on operand
+-----------------------------------------------------------*/
 Memory getValue(Memory operand)
 {
 	int value;
@@ -98,7 +102,11 @@ Memory getValue(Memory operand)
 	return -1; // error case
 }
 
-// Function to take in an operand and a value, and store the value in the correct register based on the operand.
+/********************   putValue   ***********************
+Function to take in an operand and a value, and store the value in the correct register based on the operand.
+parameters: The numberical value of the operand, and the int value to store
+return value: None
+-----------------------------------------------------------*/
 void putValue(int operand, int value)
 {
 	if (operand == AXREG)
@@ -211,9 +219,6 @@ void convertToMachineCode(FILE* fin)
 			memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 			address++;
 		}
-		//put the command into the first 3 bits of machineCode
-		//put the first operand (register) into the next 2 bits (use bitshift)
-		//put the second operand into the last 3 bits 
 	}
 	else if (part1[0] == 'a')  //move into a register
 	{
@@ -227,9 +232,6 @@ void convertToMachineCode(FILE* fin)
 			memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 			address++;
 		}
-		//put the command into the first 3 bits of machineCode
-		//put the first operand (register) into the next 2 bits (use bitshift)
-		//put the second operand into the last 3 bits 
 	}
 	else if (part1[0] == 'p') {
 		machineCode = PUT;
@@ -242,7 +244,6 @@ void convertToMachineCode(FILE* fin)
 		memory[address] = convertToNumber(part3, 0); // puts the constant value into the next memory address
 		address++;
 	}
-	//output memory, for debugging, comment out when you don't need it. could use printMemoryDumpHex
 	printf("\n");
 	printMemoryDump();
 }
